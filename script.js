@@ -1,35 +1,62 @@
-console.log("Hello World"); //to print
+'use strict';
 
-//variables
-//let const var
+// Global variables
+let secretKey = Math.round(Math.random() * 20);
+let score = Number(document.querySelector('.score').textContent); // Fetch initial score from HTML
+let originalMessage = document.querySelector('.message').textContent;
 
-// var number = 56.78;
-// var number2 = "1";
+const originalScore = Number(
+  document.querySelector('.score').dataset.originalScore
+); // Fetch original score from HTML
+let highscore = Number(document.querySelector('.highscore').textContent); // Fetch highscore from HTML
+let gameOver = false; // Variable to track if the game is over
 
-//var is global scoped
+// Event listener for checking the guess
+document.querySelector('.check').addEventListener('click', function () {
+  if (gameOver) return; // If the game is already over, exit the function
 
-var greet = 12;
+  // Fetch the guessed number
+  const guessNum = Number(document.querySelector('.guess').value);
 
-function Program1()  //function syntax --> function functionName(){ }
-{
-    console.log(greet);
+  if (!guessNum) {
+    document.querySelector('.message').textContent = 'Kindly Enter A Number'; // Prompt if no number entered
+  } else if (guessNum < secretKey) {
+    document.querySelector('.message').textContent = 'Low'; // Prompt if guess is low
+    score--; // Decrement score when guess is low
+    document.querySelector('.score').textContent = score; // Update score display
+  } else if (guessNum > secretKey) {
+    document.querySelector('.message').textContent = 'High'; // Prompt if guess is high
+    score--; // Decrement score when guess is high
+    document.querySelector('.score').textContent = score; // Update score display
+  } else {
+    document.querySelector('.message').textContent = 'Voila !! Correct Number'; // Prompt for correct guess
+    score++; // Increment score for correct guess
+    document.querySelector('.score').textContent = score; // Update score display
+    if (score > highscore) {
+      highscore = score; // Update highscore only if the current score is higher
+      document.querySelector('.highscore').textContent = highscore; // Update highscore display
+    }
+    document.querySelector('.number').textContent = secretKey; // Display correct number
+    document.body.style.backgroundColor = '#AACE9C'; // Change background color
+    gameOver = true; // Set game over flag to true
+  }
+  // Check if score is 0 and display game over message
+  if (score === 0) {
+    document.querySelector('.message').textContent =
+      '💥 You lost the game! Try again.';
+    gameOver = true; // Set game over flag to true
+  }
+});
 
-    var name = "PEACH"
-    console.log(name);
-}
-Program1(); //function call
-
-var greet = 23;
-console.log(greet);
-
-
-let boom = 1;
-console.log("Initially value was : " + boom)
-boom = 2;
-console.log("After update value is: " +boom)
-
-//const is also block-scoped and it cannot be reinitalized and cannot be updated.
-const pie = 3.14;
-
-//var declarations are globally scoped or function scoped while let and const are block scoped.
-//var variables can be updated and re-declared within its scope; let variables can be updated but not re-declared; const variables can neither be updated nor re-declared.
+// Event listener for starting a new game
+document.querySelector('.again').addEventListener('click', function () {
+  // Reset score and secret key for a new game
+  score = originalScore; // Reset score to original value
+  document.querySelector('.score').textContent = score; // Update score display
+  document.querySelector('.guess').value = ''; // Reset input field to empty
+  secretKey = Math.round(Math.random() * 20); // Generate new secret key
+  gameOver = false; // Reset game over flag
+  document.body.style.backgroundColor = '#222'; // Reset background color
+  document.querySelector('.number').textContent = ''; // Clear displayed number
+  document.querySelector('.message').textContent = originalMessage;
+});
